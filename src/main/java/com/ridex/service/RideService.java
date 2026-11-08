@@ -133,4 +133,31 @@ public class RideService
 
 	    return rideRepository.save(ride);
 	}
+	@Transactional
+	public Ride cancelRide(int rideId)
+	{
+		Ride ride = rideRepository.findById(rideId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Ride Not Found"));
+
+   
+		if (!"REQUESTED".equals(ride.getRideStatus()) &&
+				!"ACCEPTED".equals(ride.getRideStatus()))
+		{
+			throw new ResponseStatusException(
+					HttpStatus.BAD_REQUEST, "Ride cannot be cancelled");
+		}
+
+		Driver driver = ride.getDriver();
+
+		if (driver != null)
+		{
+			driver.setAvailabilityStatus("AVAILABLE");
+			driverRepo.save(driver);
+		}	
+		ride.setRideStatus("CANCELLED");
+
+		return rideRepository.save(ride);
+	}
+
 }

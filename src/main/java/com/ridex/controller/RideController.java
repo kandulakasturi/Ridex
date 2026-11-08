@@ -40,4 +40,11 @@ public class RideController
 	{
 	    return rideService.completeRide(rideId);
 	}
+	
+	@PutMapping("/cancel/{rideId}")
+	public Ride cancelRide(@PathVariable("rideId") int rideId)
+	{	
+		return rideService.cancelRide(rideId);
+	}
+
 }
