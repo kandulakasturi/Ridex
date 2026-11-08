@@ -13,6 +13,8 @@ import com.ridex.entity.Ride;
 import com.ridex.repository.CustomerRepository;
 import com.ridex.repository.DriverRepo;
 import com.ridex.repository.RideRepository;
+
+import jakarta.transaction.Transactional;
 @Service
 public class RideService 
 {
@@ -74,6 +76,58 @@ public class RideService
 	    ride.setRideStatus("ACCEPTED");
 
 	    driver.setAvailabilityStatus("BUSY");
+
+	    driverRepo.save(driver);
+
+	    return rideRepository.save(ride);
+	}
+	@Transactional
+	public Ride startRide(int rideId)
+	{
+	    Ride ride = rideRepository.findById(rideId)
+	            .orElseThrow(() -> new ResponseStatusException(
+	                    HttpStatus.NOT_FOUND, "Ride Not Found"));
+
+	    if (!"ACCEPTED".equals(ride.getRideStatus()))
+	    {
+	        throw new ResponseStatusException(
+	                HttpStatus.BAD_REQUEST, "Ride is not accepted");
+	    }
+
+	    if (ride.getDriver() == null)
+	    {
+	        throw new ResponseStatusException(
+	                HttpStatus.BAD_REQUEST, "No Driver Assigned");
+	    }
+
+	    ride.setRideStatus("STARTED");
+
+	    return rideRepository.save(ride);
+	}
+	@Transactional
+	public Ride completeRide(int rideId)
+	{
+	    Ride ride = rideRepository.findById(rideId)
+	            .orElseThrow(() -> new ResponseStatusException(
+	                    HttpStatus.NOT_FOUND, "Ride Not Found"));
+
+	    if (!"STARTED".equals(ride.getRideStatus()))
+	    {
+	        throw new ResponseStatusException(
+	                HttpStatus.BAD_REQUEST, "Ride is not started yet");
+	    }
+
+	    Driver driver = ride.getDriver();
+
+	    if (driver == null)
+	    {
+	        throw new ResponseStatusException(
+	                HttpStatus.BAD_REQUEST, "No Driver Assigned");
+	    }
+
+	    ride.setRideStatus("COMPLETED");
+
+	    driver.setAvailabilityStatus("AVAILABLE");
 
 	    driverRepo.save(driver);
 

@@ -28,4 +28,16 @@ public class RideController
 	public Ride assignDriver(@PathVariable("rideId") int rideId) {
 	    return rideService.assignDriver(rideId);
 	}
+	
+	@PutMapping("/start/{rideId}")
+	public Ride startRide(@PathVariable("rideId") int rideId)
+	{
+	    return rideService.startRide(rideId);
+	}
+
+	@PutMapping("/complete/{rideId}")
+	public Ride completeRide(@PathVariable("rideId") int rideId)
+	{
+	    return rideService.completeRide(rideId);
+	}
 }
