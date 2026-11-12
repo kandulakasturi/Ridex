@@ -20,7 +20,7 @@ public class Ride
 	private String rideStatus;
 	
 	@ManyToOne
-	@JoinColumn(name="cutsomer_id")
+	@JoinColumn(name="customer_id")
 	private Customer customer;
 	
 	@ManyToOne

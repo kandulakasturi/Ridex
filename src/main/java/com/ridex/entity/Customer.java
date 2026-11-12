@@ -1,5 +1,7 @@
 package com.ridex.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,9 +13,10 @@ public class Customer
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int customerId;
+	private Integer customerId;
 	private String name;
 	private String email;
+	@JsonIgnore
 	private String password;
 	private String phoneNumber;
 	public Customer() {
@@ -27,10 +30,11 @@ public class Customer
 		this.password = password;
 		this.phoneNumber = phoneNumber;
 	}
-	public int getCustomerId() {
+	public Integer getCustomerId() 
+	{
 		return customerId;
 	}
-	public void setCustomerId(int customerId) {
+	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
 	public String getName() {

@@ -159,5 +159,19 @@ public class RideService
 
 		return rideRepository.save(ride);
 	}
-
+	public List<Ride> getRideHistory(Integer customerId)
+	{
+		customerRepository.findById(customerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Customer Not Found"));
+		return rideRepository.findByCustomer_CustomerId(customerId);
+	}
+	
+	public Ride calculateFare(int rideId)
+	{
+		Ride ride=rideRepository.findById(rideId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ride Not Found"));
+		double baseFare=50;
+		double perKm = 12;
+		double fare=baseFare+(ride.getDistance()*perKm);
+		ride.setEstimatedFare(fare);
+		return rideRepository.save(ride);
+	}
 }
