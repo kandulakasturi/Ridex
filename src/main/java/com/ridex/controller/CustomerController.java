@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ridex.dto.CustomerResponseDTO;
 import com.ridex.entity.Customer;
 import com.ridex.service.CustomerService;
 
@@ -40,15 +41,28 @@ public class CustomerController
 		return customerService.getCustomerById(customerId);
 	}
 	
-	@PutMapping("/{customerId}")
-	public Customer updateCustomer(@PathVariable int customerId, @RequestBody Customer customer)
-	{
-		return customerService.updateCustomer(customerId, customer);
-	}
+//	@PutMapping("/{customerId}")
+//	public Customer updateCustomer(@PathVariable int customerId, @RequestBody Customer customer)
+//	{
+//		return customerService.updateCustomer(customerId, customer);
+//	}
 	
 	@DeleteMapping("/{customerId}")
 	public String deleteCustomer(@PathVariable int customerId)
 	{
 		return customerService.deleteCustomer(customerId);
 	}
+	
+	@GetMapping("/profile/{customerId}")
+	public CustomerResponseDTO getCustomerProfile(@PathVariable int customerId)
+	{
+		return customerService.getCustomerProfile(customerId);
+	}
+	
+	@PutMapping("/update/{customerId}")
+	public CustomerResponseDTO updateCustomer(@PathVariable int customerId, @RequestBody Customer customer)
+	{
+		return customerService.updateCustomer(customerId, customer);
+	}
+
 }
