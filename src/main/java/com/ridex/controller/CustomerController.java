@@ -1,6 +1,7 @@
 package com.ridex.controller;
 
 import java.util.List;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +25,7 @@ public class CustomerController
 	private CustomerService customerService;
 	
 	@PostMapping("/register")
-	public Customer registerCustomer(@RequestBody Customer customer)
+	public Customer registerCustomer(@Valid @RequestBody Customer customer)
 	{
 		return customerService.registerCustomer(customer);
 	}
@@ -60,7 +61,7 @@ public class CustomerController
 	}
 	
 	@PutMapping("/update/{customerId}")
-	public CustomerResponseDTO updateCustomer(@PathVariable int customerId, @RequestBody Customer customer)
+	public CustomerResponseDTO updateCustomer(@PathVariable int customerId,@Valid  @RequestBody Customer customer)
 	{
 		return customerService.updateCustomer(customerId, customer);
 	}
