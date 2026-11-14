@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ridex.entity.Driver;
 import com.ridex.service.DriverService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/driver")
 public class DriverController 
@@ -17,7 +19,7 @@ public class DriverController
 	private DriverService driverService;
 	
 	@PostMapping("/register")
-	public Driver registerDriver(@RequestBody Driver driver)
+	public Driver registerDriver(@Valid @RequestBody Driver driver)
 	{
 		return driverService.registerDriver(driver);
 	}
