@@ -1,17 +1,17 @@
 
 package com.ridex.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ridex.dto.CustomerResponseDTO;
-import com.ridex.dto.DriverResponseDTO;
-import com.ridex.dto.PaymentResponseDTO;
-import com.ridex.dto.RideResponseDTO;
+import com.ridex.entity.Driver;
+import com.ridex.entity.Payment;
+import com.ridex.entity.Ride;
 import com.ridex.service.AdminService;
 
 @RestController
@@ -21,27 +21,42 @@ public class AdminController
     @Autowired
     private AdminService adminService;
 
+
     @GetMapping("/customers")
-    public List<CustomerResponseDTO> getAllCustomers()
-    {
-        return adminService.getAllCustomers();
+    public Page<CustomerResponseDTO> getAllCustomers(
+    	@RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
+
+    return adminService.getAllCustomers(page, size);
     }
     
     @GetMapping("/drivers")
-    public List<DriverResponseDTO> getAllDrivers()
+    public Page<Driver> getAllDrivers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "driverId") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction)
     {
-        return adminService.getAllDrivers();
+        return adminService.getAllDrivers(page, size, sortBy, direction);
     }
-   
+    
     @GetMapping("/rides")
-    public List<RideResponseDTO> getAllRides()
+    public Page<Ride> getAllRides(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "rideId") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction)
     {
-        return adminService.getAllRides();
+        return adminService.getAllRides(page, size, sortBy, direction);
     }
     
     @GetMapping("/payments")
-    public List<PaymentResponseDTO> getAllPayments()
+    public Page<Payment> getAllPayments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "paymentId") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction)
     {
-        return adminService.getAllPayments();
+        return adminService.getAllPayments(page, size, sortBy, direction);
     }
 }

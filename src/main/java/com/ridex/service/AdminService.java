@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ridex.dto.CustomerResponseDTO;
@@ -35,115 +39,59 @@ public class AdminService
     @Autowired
     private PaymentRepository paymentRepository;
     
-    public List<CustomerResponseDTO> getAllCustomers()
+
+    public Page<CustomerResponseDTO> getAllCustomers(int page, int size) 
     {
-        List<Customer> customers = customerRepository.findAll();
+    	Pageable pageable = PageRequest.of(
+    			page,
+    			size,
+    			Sort.by("customerId").ascending()
+    			);
 
-        List<CustomerResponseDTO> customerList = new ArrayList<>();
+    	Page<Customer> customers =
+    			customerRepository.findAll(pageable);
 
-        for(Customer customer : customers)
-        {
-            CustomerResponseDTO dto = new CustomerResponseDTO(
+    	return customers.map(customer ->
+    		new CustomerResponseDTO(
                     customer.getCustomerId(),
                     customer.getName(),
                     customer.getEmail(),
                     customer.getPhoneNumber()
-            );
+    				)
+    			);
+    }
 
-            customerList.add(dto);
-        }
+    
+    public Page<Driver> getAllDrivers(int page, int size, String sortBy, String direction)
+    {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-        return customerList;
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return driverRepo.findAll(pageable);
     }
     
-    public List<DriverResponseDTO> getAllDrivers()
+    public Page<Ride> getAllRides(int page, int size, String sortBy, String direction)
     {
-        List<Driver> drivers = driverRepo.findAll();
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-        List<DriverResponseDTO> driverList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        for(Driver driver : drivers)
-        {
-            DriverResponseDTO dto = new DriverResponseDTO(
-                    driver.getDriverId(),
-                    driver.getName(),
-                    driver.getEmail(),
-                    driver.getPhoneNumber(),
-                    driver.getLicenseNumber(),
-                    driver.getAvailabilityStatus()
-            );
-
-            driverList.add(dto);
-        }
-
-        return driverList;
+        return rideRepository.findAll(pageable);
     }
     
-    public List<RideResponseDTO> getAllRides()
+    public Page<Payment> getAllPayments(int page, int size, String sortBy, String direction)
     {
-        List<Ride> rides = rideRepository.findAll();
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-        List<RideResponseDTO> rideList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        for(Ride ride : rides)
-        {
-            int customerId = ride.getCustomer().getCustomerId();
-            String customerName = ride.getCustomer().getName();
-
-            int driverId = 0;
-            String driverName = null;
-
-            if(ride.getDriver() != null)
-            {
-                driverId = ride.getDriver().getDriverId();
-                driverName = ride.getDriver().getName();
-            }
-
-            RideResponseDTO dto = new RideResponseDTO(
-                    ride.getRideId(),
-                    ride.getPickupLocation(),
-                    ride.getDropLocation(),
-                    ride.getDistance(),
-                    ride.getEstimatedFare(),
-                    ride.getRideStatus(),
-                    customerId,
-                    customerName,
-                    driverId,
-                    driverName
-            );
-
-            rideList.add(dto);
-        }
-
-        return rideList;
-    }
-    
-    public List<PaymentResponseDTO> getAllPayments()
-    {
-        List<Payment> payments = paymentRepository.findAll();
-
-        List<PaymentResponseDTO> paymentList = new ArrayList<>();
-
-        for(Payment payment : payments)
-        {
-            int rideId = 0;
-
-            if(payment.getRide() != null)
-            {
-                rideId = payment.getRide().getRideId();
-            }
-
-            PaymentResponseDTO dto = new PaymentResponseDTO(
-                    payment.getPaymentId(),
-                    rideId,
-                    payment.getAmount(),
-                    payment.getPaymentMethod(),
-                    payment.getPaymentStatus()
-            );
-
-            paymentList.add(dto);
-        }
-
-        return paymentList;
+        return paymentRepository.findAll(pageable);
     }
 }
